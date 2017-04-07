@@ -4,7 +4,7 @@
 # Marketing Analytics
 # April 13, 2017
 
-# James' Mac Working Directory
+# James Mac Working Directory
 setwd("~/Dropbox/BA MBA/Spring 2017/BUS 256A Mkt Analytics/Assignments/Svedka Analysis/Svedka_Analysis")
 
 
