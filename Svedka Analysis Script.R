@@ -14,6 +14,9 @@ View(Svedka_data)
 # James: My csv is giving me a bunch of unecessary columns at the end, so I need to remove them.
 # You may not need to do this if you use your own csv file
 Svedka_data = subset(Svedka_data, select = -c(X68, X69, X70, X71, X72, X73, X74, X75) )
+# There is a typo in the PricePerUnit column -- the column in listed as PriceRerUnit
+library(plyr)
+Svedka_data <- rename(Svedka_data, c("PriceRerUnit"="PricePerUnit"))
 
 # 1. (5) Create a simple histogram of our target variable, TotalSales.  
 # Comment on the shape of the distribution that you see.
@@ -32,18 +35,32 @@ hist(Svedka_data$TotalSales,
 # ln(TotalSales) for the dependent variable. Comment on the relative influence 
 # of the five variables on sales.
 
+RegQ2 <- lm(LnSales ~ PricePerUnit + Print + Outdoor + Broad + LagTotalSales, data = Svedka_data)
+summary(RegQ2)
 
+# I don't know the answer to this question.
 
 # 3. (15) Sometimes we can improve model fit by taking logs on independent variables. 
-# Run a second regression of the natural logarithm of change in sales on the the 
+# Run a second regression of the natural logarithm of change in sales on the 
 # natural logarithm of previous period’s prices, and the natural log of 
 # marketing expenditures on print, outdoor, and broadcasting.  
 # Comment on the comparison of your two models at this point in the analysis.
+
+RegQ3 <- lm((LnSales-LnLSales) ~ PricePerUnit + LnPrint + LnOut + LnBroad, data = Svedka_data)
+summary(RegQ3)
+
+# Not sure about the RegQ3 code above
+# I don't know the answer to this question.
+
 
 # 4. (15 pts) To understand the influence of vodka quality, expand your regression model 
 # from question 2 by adding the tier 1 and tier 2 dummy variables (that indicate 
 # whether a vodka brand belongs to the first or second quality tiers) to the set of 
 # independent variables named in question 2.  How does quality influence sales?
+
+#Stuck Here
+RegQ4 <- lm(LnSales ~ PricePerUnit + Print + Outdoor + Broad + LagTotalSales + Tier1 + Tier2, data = Svedka_data)
+#Stuck Here
 
 # 5. (15) To understand the influence of competition and brand power, expand your model 
 # again and run a regression by adding the sum of sales of all the competing brands in 
@@ -65,6 +82,7 @@ hist(Svedka_data$TotalSales,
 # for Tier 1 brands and total industry sales units for Tier 2 brands. NOTE: This will 
 #require some aggregation and pre-processing of the data, and is more of a challenge than 
 # it might appear. 
+
 
 
 # 9.	(10) Conclude with a short summary of your findings. How do the 4 elements of the 
