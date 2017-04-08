@@ -7,9 +7,23 @@
 # James Mac Working Directory
 setwd("~/Dropbox/BA MBA/Spring 2017/BUS 256A Mkt Analytics/Assignments/Svedka Analysis/Svedka_Analysis")
 
+# Import "Svedka data.csv"
+library(readr)
+Svedka_data <- read_csv("Svedka data.csv")
+View(Svedka_data)
+# James: My csv is giving me a bunch of unecessary columns at the end, so I need to remove them.
+# You may not need to do this if you use your own csv file
+Svedka_data = subset(Svedka_data, select = -c(X68, X69, X70, X71, X72, X73, X74, X75) )
 
 # 1. (5) Create a simple histogram of our target variable, TotalSales.  
 # Comment on the shape of the distribution that you see.
+
+hist(Svedka_data$TotalSales,
+     main = 'Histogram of Combined Total Sales for Featured Vodka Brands Between 1995-2007',
+       xlab = 'Total Sales')
+
+# The shape of the distribution is extremely downward trending with the majority 
+# or Total Sales at $2,000 or less.
 
 # 2. (10) Run a regression of the natural logarithm of total sales on the the 
 # following variables: price, print marketing expenditure, outdoor marketing expenditure, 
@@ -17,6 +31,8 @@ setwd("~/Dropbox/BA MBA/Spring 2017/BUS 256A Mkt Analytics/Assignments/Svedka An
 # Keeping in mind your answer to #1, explain why it makes sense to use 
 # ln(TotalSales) for the dependent variable. Comment on the relative influence 
 # of the five variables on sales.
+
+
 
 # 3. (15) Sometimes we can improve model fit by taking logs on independent variables. 
 # Run a second regression of the natural logarithm of change in sales on the the 
