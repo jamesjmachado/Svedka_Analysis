@@ -131,7 +131,6 @@ Q6RegSummary <- tidy(RegQ6)
 Q6RegSummary
 write.csv(Q6RegSummary, "Q6RegSummary.csv")
 
-
 # 7.	(10) Examine the coefficients of the price and advertising variables in your 
 # last four regressions. Why do the coefficients of price and advertising change in 
 # the above regressions? 
@@ -142,6 +141,28 @@ write.csv(Q6RegSummary, "Q6RegSummary.csv")
 #require some aggregation and pre-processing of the data, and is more of a challenge than 
 # it might appear. 
 
+# One line will be Tier 1 brand total industry sales units
+# the other line will be Tier 1 brand total industry sales units
+
+Tier1_Agg <- aggregate(Svedka_data$TotalSales ~ Svedka_data$Year + Svedka_data$Tier1, FUN = sum)
+View(Tier1_Agg)
+Tier1_Agg<- rename(ag1, old = c("Svedka_data$Tier1","Svedka_data$Year",       "Svedka_data$TotalSales"),
+         new = c("Tier",      "Year",       "TotalSales"))
+
+
+Tier2_Agg <- aggregate(Svedka_data$TotalSales ~ Svedka_data$Year + Svedka_data$Tier2, FUN = sum)
+setnames(ag2, old = c("Svedka_data$Tier2","Svedka_data$Year",       "Svedka_data$TotalSales"),
+         new = c("Tier",      "Year",       "TotalSales"))
+
+
+
+Tier1 <- ag1[which(ag1$Tier==1 & Tier$Year),]
+Tier1$Tier <- NULL
+
+
+
+Tier2 <- ag2[which(ag2$Tier==1 & Tier$Year),]
+Tier2$Tier <- NULL
 
 
 # 9.	(10) Conclude with a short summary of your findings. How do the 4 elements of the 
