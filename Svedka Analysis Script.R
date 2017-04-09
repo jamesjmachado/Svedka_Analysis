@@ -55,6 +55,7 @@ summary(RegQ2)
 
 # Export Regression Summary to .csv file
 library(devtools)
+# Install package ("broom") --- see comment below
 # install_github("dgrtwo/broom")
 library(broom)
 Q2RegSummary <- tidy(RegQ2)
@@ -69,7 +70,7 @@ write.csv(Q2RegSummary, "Q2RegSummary.csv")
 # marketing expenditures on print, outdoor, and broadcasting.  
 # Comment on the comparison of your two models at this point in the analysis.
 
-RegQ3 <- lm((LnSales-LnLSales) ~ PricePerUnit + LnPrint + LnOut + LnBroad, data = Svedka_data)
+RegQ3 <- lm((LnSales-LnLSales) ~ LnPrice + LnPrint + LnOut + LnBroad, data = Svedka_data)
 summary(RegQ3)
 
 # Export Regression Summary to .csv file
@@ -105,7 +106,7 @@ write.csv(Q4RegSummary, "Q4RegSummary.csv")
 # the previous year (“lagtotalminussales”) to the independent variables in question 3. 
 # What additional insight does this model provide?
 
-RegQ5 <- lm((LnSales-LnLSales) ~ PricePerUnit + LnPrint + LnOut + LnBroad + LagTotalMinusSales, data = Svedka_data)
+RegQ5 <- lm((LnSales-LnLSales) ~ LnPrice + LnPrint + LnOut + LnBroad + LagTotalMinusSales, data = Svedka_data)
 summary(RegQ5)
 
 # Export Regression Summary to .csv file
