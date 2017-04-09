@@ -41,7 +41,7 @@ hist(Svedka_data$TotalSales,
 dev.off()
 
 # The shape of the distribution is extremely downward trending with the majority 
-# or Total Sales at $2,000 or less. This means that most brands had Total Sales of $2,000 or less.
+# of Total Sales at $2,000 or less. This means that most brands had Total Sales of $2,000 or less.
 
 # 2. (10) Run a regression of the natural logarithm of total sales on the the 
 # following variables: price, print marketing expenditure, outdoor marketing expenditure, 
@@ -166,6 +166,36 @@ Tier2 <- Tier2_Agg[which(Tier2_Agg$Tier2==1 & Tier2_Agg$Year),]
 View(Tier2)
 Tier2$Tier2 <- NULL
 View(Tier2)
+
+
+library(ggplot2)
+ggplot(Tier1,aes(Year,`Total Sales`)) + 
+  geom_line(aes(color="Tier1")) +
+  geom_line(data=Tier2,aes(color="Tier2")) +
+  ylab("Total Sales") +
+  xlab("Year") +
+  ggtitle("Time Series Plot: \nTier1 vs Tier2 Total Sales")
+
+#Export Time Series Plot for Jonny
+# pdf
+pdf("Tier1v2TotalSalesTimeSeries.pdf")
+ggplot(Tier1,aes(Year,`Total Sales`)) + 
+  geom_line(aes(color="Tier1")) +
+  geom_line(data=Tier2,aes(color="Tier2")) +
+  ylab("Total Sales") +
+  xlab("Year") +
+  ggtitle("Time Series Plot: \nTier1 vs Tier2 Total Sales")
+dev.off()
+
+#png
+png("Tier1v2TotalSalesTimeSeries.png")
+ggplot(Tier1,aes(Year,`Total Sales`)) + 
+  geom_line(aes(color="Tier1")) +
+  geom_line(data=Tier2,aes(color="Tier2")) +
+  ylab("Total Sales") +
+  xlab("Year") +
+  ggtitle("Time Series Plot: \nTier1 vs Tier2 Total Sales")
+dev.off()
 
 
 # 9.	(10) Conclude with a short summary of your findings. How do the 4 elements of the 
