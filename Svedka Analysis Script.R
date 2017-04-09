@@ -41,7 +41,7 @@ hist(Svedka_data$TotalSales,
 dev.off()
 
 # The shape of the distribution is extremely downward trending with the majority 
-# or Total Sales at $2,000 or less.
+# or Total Sales at $2,000 or less. This means that most brands had Total Sales of $2,000 or less.
 
 # 2. (10) Run a regression of the natural logarithm of total sales on the the 
 # following variables: price, print marketing expenditure, outdoor marketing expenditure, 
