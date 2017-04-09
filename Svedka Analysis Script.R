@@ -147,23 +147,25 @@ write.csv(Q6RegSummary, "Q6RegSummary.csv")
 
 Tier1_Agg <- aggregate(Svedka_data$TotalSales ~ Svedka_data$Year + Svedka_data$Tier1, FUN = sum)
 View(Tier1_Agg)
-Tier1_Agg<- rename(ag1, old = c("Svedka_data$Tier1","Svedka_data$Year",       "Svedka_data$TotalSales"),
-         new = c("Tier",      "Year",       "TotalSales"))
+Tier1_Agg <- rename(Tier1_Agg,c("Svedka_data$Tier1" = "Tier1","Svedka_data$Year" ="Year", 
+                               "Svedka_data$TotalSales" = "Total Sales"))
 
 
 Tier2_Agg <- aggregate(Svedka_data$TotalSales ~ Svedka_data$Year + Svedka_data$Tier2, FUN = sum)
-setnames(ag2, old = c("Svedka_data$Tier2","Svedka_data$Year",       "Svedka_data$TotalSales"),
-         new = c("Tier",      "Year",       "TotalSales"))
+View(Tier2_Agg)
+Tier2_Agg <- rename(Tier2_Agg,c("Svedka_data$Tier2" = "Tier2","Svedka_data$Year" ="Year", 
+                                "Svedka_data$TotalSales" = "Total Sales"))
+
+Tier1 <- Tier1_Agg[which(Tier1_Agg$Tier1==1 & Tier1_Agg$Year),]
+View(Tier1)
+Tier1$Tier1 <- NULL
+View(Tier1)
 
 
-
-Tier1 <- ag1[which(ag1$Tier==1 & Tier$Year),]
-Tier1$Tier <- NULL
-
-
-
-Tier2 <- ag2[which(ag2$Tier==1 & Tier$Year),]
-Tier2$Tier <- NULL
+Tier2 <- Tier2_Agg[which(Tier2_Agg$Tier2==1 & Tier2_Agg$Year),]
+View(Tier2)
+Tier2$Tier2 <- NULL
+View(Tier2)
 
 
 # 9.	(10) Conclude with a short summary of your findings. How do the 4 elements of the 
