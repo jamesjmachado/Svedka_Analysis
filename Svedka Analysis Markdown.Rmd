@@ -1,0 +1,138 @@
+---
+title: "Svedka Case Analysis"
+author: "James Machado, Justin Kaplan, Jonny Shakerchi"
+date: "4/13/2017"
+output:
+  word_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Code to get started
+```{r}
+setwd("~/Desktop")
+library(readr)
+Svedka_data <- read_csv("Svedka data.csv")
+View(Svedka_data)
+Svedka_data = subset(Svedka_data, select = -c(68:75) )
+library(plyr)
+Svedka_data <- rename(Svedka_data, c("PriceRerUnit"="PricePerUnit"))
+```
+
+# Question 1. (5) Create a simple histogram of our target variable, TotalSales.  
+# Comment on the shape of the distribution that you see.
+
+```{r}
+hist(Svedka_data$TotalSales,
+     main = 'Hist. of Combined Total Sales for \nFeatured Vodka Brands (1995-2007)',
+       xlab = 'Total Sales')
+```
+
+## Answer: The shape of the distribution is extremely downward trending with the majority of Total Sales at $2,000 or less. This means that most brands had Total Sales of $2,000 or less.
+
+
+# Question 2. (10) Run a regression of the natural logarithm of total sales on the the following variables: price, print marketing expenditure, outdoor marketing expenditure, broadcast marketing expenditure, and previous year’s sales. Keeping in mind your answer to #1, explain why it makes sense to use ln(TotalSales) for the dependent variable. Comment on the relative influence of the five variables on sales.
+
+```{r}
+RegQ2 <- lm(LnSales ~ PricePerUnit + Print + Outdoor + Broad + LagTotalSales, data = Svedka_data)
+summary(RegQ2)
+
+```
+
+## Answer: It makes sense to use ln(Sales), because according to the histogram we made, most of the data was skewed to the left. Using a natural log un-skews the data, making it easier to interpret. Based on this regression, it is apparent that price, print marketing expenditure, outdoor marketing expenditure, and previous year’s sales are significant variables affecting vodka sales by very marginal percentages less than 1%. However, broadcast marketing expenditure is not a significant variable in determining sales.
+
+
+# Question 3. (15) Sometimes we can improve model fit by taking logs on independent variables. Run a second regression of the natural logarithm of change in sales on the natural logarithm of previous period’s prices, and the natural log of marketing expenditures on print, outdoor, and broadcasting. Comment on the comparison of your two models at this point in the analysis.
+
+```{r}
+RegQ3 <- lm((LnSales-LnLSales) ~ LnPrice + LnPrint + LnOut + LnBroad, data = Svedka_data)
+summary(RegQ3)
+
+```
+
+## Answer: We resize the independent variables by taking the natural log of them to better understand the effects on the natural log of the independent variable. Unlike in the last question, when all variables are resized by the natural log, we can more clearly see the percent affects of each independent variable on the dependent variable. However, now we can see that only the natural log of print marketing expenditure and outdoor marketing expenditure are the only  significant variables on sales, respectively adding or subtracting an additional percentage point for each additional dollar spent on print or outdoor ads.
+
+
+# Question 4. (15 pts) To understand the influence of vodka quality, expand your regression model from question 2 by adding the tier 1 and tier 2 dummy variables (that indicate whether a vodka brand belongs to the first or second quality tiers) to the set of independent variables named in question 2.  How does quality influence sales?
+
+
+```{r}
+RegQ4 <- lm(LnSales ~ PricePerUnit + Print + Outdoor + Broad + LagTotalSales + Tier1 + Tier2, data = Svedka_data)
+summary(RegQ4)
+
+```
+
+
+## Interpreation: According to our regression, a tier 1 vodka is not a significant variable to determining sales. However, a tier 2 vodka is significant. If the vodka is tier 2, sales can be expected to decrease by 46%.
+
+
+# Question 5. (15) To understand the influence of competition and brand power, expand your model again and run a regression by adding the sum of sales of all the competing brands in the previous year (“lagtotalminussales”) to the independent variables in question 3. What additional insight does this model provide?
+
+```{r}
+RegQ5 <- lm((LnSales-LnLSales) ~ LnPrice + LnPrint + LnOut + LnBroad + LagTotalMinusSales, data = Svedka_data)
+summary(RegQ5)
+
+```
+
+## Answer: The LagTotalMinusSales variable is a significant variable, but it has an extremely small effect on total sales. Instead, this variable provides some explanation on the variance in the regression and gives us a stronger R^2.
+
+
+# Question 6.	(10) To measure the sales growth of new brands compared to the existent ones, include the variable “firstintro” to the independent variable set in question 4. “Firstintro” is equal to 1 in the first three years after a brand is introduced, and equals 0 elsewhere.  How does it help to include this variable in the model?
+
+```{r}
+RegQ6 <- lm(LnSales ~ PricePerUnit + Print + Outdoor + Broad + LagTotalSales + Tier1 + Tier2 + Firstintro, data = Svedka_data)
+summary(RegQ6)
+
+
+```
+
+## Answer: Again, adding this significant variable explains more variance in the regression. The effect of this variable on sales is also extremely significant; for the first 3 years of sales of a new vodka brand, we can expect sales to decrease by 94% in each of the first three years. This implies that branding and competition are extremely strong barriers to entry.
+
+
+# Question 7.	(10) Examine the coefficients of the price and advertising variables in your last four regressions. Why do the coefficients of price and advertising change in the above regressions? 
+
+## Answer: The coefficients keep changing as we add more variables, because as we add more variables, we better explain the variance in each regression. Before, the price and advertising variable coefficients were accounting for the effects of the added variables that were not originally included. When included, the price and advertising coefficients changed to more accurately reflect their effects on total sales.
+
+# Question 8.	(10) Create a time-series plot with two lines on it:  total industry sales units for Tier 1 brands and total industry sales units for Tier 2 brands. NOTE: This will require some aggregation and pre-processing of the data, and is more of a challenge than it might appear. 
+
+```{r}
+Tier1_Agg <- aggregate(Svedka_data$TotalSales ~ Svedka_data$Year + Svedka_data$Tier1, FUN = sum)
+View(Tier1_Agg)
+Tier1_Agg <- rename(Tier1_Agg,c("Svedka_data$Tier1" = "Tier1","Svedka_data$Year" ="Year", 
+                               "Svedka_data$TotalSales" = "Total Sales"))
+
+Tier2_Agg <- aggregate(Svedka_data$TotalSales ~ Svedka_data$Year + Svedka_data$Tier2, FUN = sum)
+View(Tier2_Agg)
+Tier2_Agg <- rename(Tier2_Agg,c("Svedka_data$Tier2" = "Tier2","Svedka_data$Year" ="Year", 
+                                "Svedka_data$TotalSales" = "Total Sales"))
+
+Tier1 <- Tier1_Agg[which(Tier1_Agg$Tier1==1 & Tier1_Agg$Year),]
+View(Tier1)
+Tier1$Tier1 <- NULL
+View(Tier1)
+
+Tier2 <- Tier2_Agg[which(Tier2_Agg$Tier2==1 & Tier2_Agg$Year),]
+View(Tier2)
+Tier2$Tier2 <- NULL
+View(Tier2)
+
+library(ggplot2)
+ggplot(Tier1,aes(Year,`Total Sales`)) + 
+  geom_line(aes(color="Tier1")) +
+  geom_line(data=Tier2,aes(color="Tier2")) +
+  ylab("Total Sales") +
+  xlab("Year") +
+  ggtitle("Time Series Plot: \nTier1 vs Tier2 Total Sales")
+
+```
+
+# Question 9.	(10) Conclude with a short summary of your findings. How do the 4 elements of the marketing mix influence unit sales in this industry? What insights should we communicate with M. Cuvelier?
+
+## Answer:
+# Product - over time, tier 2 vodka brands have more sales, and it is extremely hard to introduce a new brand due to high barriers to entry.
+# Price - significant variable to sales; consumers are price sensitive.
+# Promotion - it seems outdoor and print ads are the most effective; broadcast is insignificant.
+# Place - we did not analyze distribution.

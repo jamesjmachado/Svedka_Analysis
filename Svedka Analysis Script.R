@@ -4,6 +4,7 @@
 # Marketing Analytics
 # April 13, 2017
 
+
 # James Mac Working Directory
 setwd("~/Dropbox/BA MBA/Spring 2017/BUS 256A Mkt Analytics/Assignments/Svedka Analysis/Svedka_Analysis")
 
@@ -53,6 +54,14 @@ dev.off()
 RegQ2 <- lm(LnSales ~ PricePerUnit + Print + Outdoor + Broad + LagTotalSales, data = Svedka_data)
 summary(RegQ2)
 
+## 2. It makes sense to use ln(Sales), because according to the histogram we made, most 
+# of the data was skewed to the left. Using a natural log un-skews the data, making it 
+# easier to interpret. Based on this regression, it is apparent that price, print 
+# marketing expenditure, outdoor marketing expenditure, and previous year’s sales are 
+# significant variables affecting vodka sales by very marginal percentages less than 1%. 
+# However, broadcast marketing expenditure is not a significant variable in determining sales.
+
+
 # Export Regression Summary to .csv file
 library(devtools)
 # Install package ("broom") --- see comment below
@@ -62,7 +71,6 @@ Q2RegSummary <- tidy(RegQ2)
 Q2RegSummary
 write.csv(Q2RegSummary, "Q2RegSummary.csv")
 
-# I don't know the answer to this question.
 
 # 3. (15) Sometimes we can improve model fit by taking logs on independent variables. 
 # Run a second regression of the natural logarithm of change in sales on the 
@@ -73,16 +81,21 @@ write.csv(Q2RegSummary, "Q2RegSummary.csv")
 RegQ3 <- lm((LnSales-LnLSales) ~ LnPrice + LnPrint + LnOut + LnBroad, data = Svedka_data)
 summary(RegQ3)
 
+## 3. We resize the independent variables by taking the natural log of them to better 
+# understand the effects on the natural log of the independent variable. Unlike in the last 
+# question, when all variables are resized by the natural log, we can more clearly see the percent 
+# affects of each independent variable on the dependent variable. However, now we can see that 
+# only the natural log of print marketing expenditure and outdoor marketing expenditure are the 
+# only  significant variables on sales, respectively adding or subtracting an additional percentage 
+# point for each additional dollar spent on print or outdoor ads.
+
+
 # Export Regression Summary to .csv file
 library(devtools)
 library(broom)
 Q3RegSummary <- tidy(RegQ3)
 Q3RegSummary
 write.csv(Q3RegSummary, "Q3RegSummary.csv")
-
-
-# Not sure about the RegQ3 code above
-# I don't know the answer to this question.
 
 
 # 4. (15 pts) To understand the influence of vodka quality, expand your regression model 
@@ -92,6 +105,11 @@ write.csv(Q3RegSummary, "Q3RegSummary.csv")
 
 RegQ4 <- lm(LnSales ~ PricePerUnit + Print + Outdoor + Broad + LagTotalSales + Tier1 + Tier2, data = Svedka_data)
 summary(RegQ4)
+
+## According to our regression, a tier 1 vodka is not a significant variable to determining 
+# sales. However, a tier 2 vodka is significant. If the vodka is tier 2, sales can be 
+# expected to decrease by 46%.
+
 
 # Export Regression Summary to .csv file
 library(devtools)
@@ -109,6 +127,10 @@ write.csv(Q4RegSummary, "Q4RegSummary.csv")
 RegQ5 <- lm((LnSales-LnLSales) ~ LnPrice + LnPrint + LnOut + LnBroad + LagTotalMinusSales, data = Svedka_data)
 summary(RegQ5)
 
+## 5. The LagTotalMinusSales variable is a significant variable, but it has an extremely 
+# small effect on total sales. Instead, this variable provides some explanation on the 
+# variance in the regression and gives us a stronger R^2.
+
 # Export Regression Summary to .csv file
 library(devtools)
 library(broom)
@@ -125,6 +147,12 @@ write.csv(Q5RegSummary, "Q5RegSummary.csv")
 RegQ6 <- lm(LnSales ~ PricePerUnit + Print + Outdoor + Broad + LagTotalSales + Tier1 + Tier2 + Firstintro, data = Svedka_data)
 summary(RegQ6)
 
+## 6. Again, adding this significant variable explains more variance in the regression. 
+# The effect of this variable on sales is also extremely significant; for the first 3 years 
+# of sales of a new vodka brand, we can expect sales to decrease by 94% in each of the first 
+# three years. This implies that branding and competition are extremely strong barriers to entry.
+
+
 # Export Regression Summary to .csv file
 library(devtools)
 library(broom)
@@ -136,20 +164,23 @@ write.csv(Q6RegSummary, "Q6RegSummary.csv")
 # last four regressions. Why do the coefficients of price and advertising change in 
 # the above regressions? 
 
+## 7. The coefficients keep changing as we add more variables, because as we add more 
+# variables, we better explain the variance in each regression. Before, the price and 
+# advertising variable coefficients were accounting for the effects of the added variables 
+# that were not originally included. When included, the price and advertising coefficients 
+# changed to more accurately reflect their effects on total sales.
+
 
 # 8.	(10) Create a time-series plot with two lines on it:  total industry sales units 
 # for Tier 1 brands and total industry sales units for Tier 2 brands. NOTE: This will 
 #require some aggregation and pre-processing of the data, and is more of a challenge than 
 # it might appear. 
 
-# One line will be Tier 1 brand total industry sales units
-# the other line will be Tier 1 brand total industry sales units
 
 Tier1_Agg <- aggregate(Svedka_data$TotalSales ~ Svedka_data$Year + Svedka_data$Tier1, FUN = sum)
 View(Tier1_Agg)
 Tier1_Agg <- rename(Tier1_Agg,c("Svedka_data$Tier1" = "Tier1","Svedka_data$Year" ="Year", 
                                "Svedka_data$TotalSales" = "Total Sales"))
-
 
 Tier2_Agg <- aggregate(Svedka_data$TotalSales ~ Svedka_data$Year + Svedka_data$Tier2, FUN = sum)
 View(Tier2_Agg)
@@ -161,12 +192,10 @@ View(Tier1)
 Tier1$Tier1 <- NULL
 View(Tier1)
 
-
 Tier2 <- Tier2_Agg[which(Tier2_Agg$Tier2==1 & Tier2_Agg$Year),]
 View(Tier2)
 Tier2$Tier2 <- NULL
 View(Tier2)
-
 
 library(ggplot2)
 ggplot(Tier1,aes(Year,`Total Sales`)) + 
@@ -201,3 +230,12 @@ dev.off()
 # 9.	(10) Conclude with a short summary of your findings. How do the 4 elements of the 
 # marketing mix influence unit sales in this industry? What insights should we communicate 
 # with M. Cuvelier?
+
+## 9. Product - over time, tier 2 vodka brands have more sales, and it is extremely hard 
+# to introduce a new brand due to high barriers to entry.
+# Price - significant variable to sales; consumers are price sensitive.
+# Promotion - it seems outdoor and print ads are the most effective; broadcast is insignificant.
+# Place - we did not analyze distribution.
+
+
+
